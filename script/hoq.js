@@ -1550,7 +1550,7 @@ HouseOfQuality._userReqValuesAdded = function(e) {
 HouseOfQuality._userReqValuesRemoved = function(e) {
     jQuery.each(e.values, function(index, userReq) {
         // awareness highlight
-        var color = (HouseOfQuality.getCollaboratorById(e.userId) !== null) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
+        var color = (e.userId && (HouseOfQuality.getCollaboratorById(e.userId) !== null)) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
 
         if (!e.isLocal) {
             $("tr[data-uuid='" + userReq.uuid + "']").effect('highlight', {color: color}, 2000, function() {
@@ -1580,7 +1580,7 @@ HouseOfQuality._userReqValuesRemoved = function(e) {
 
 HouseOfQuality._userReqValueChanged = function(e) {
     // awareness highlight
-    var color = (HouseOfQuality.getCollaboratorById(e.userId) !== null) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
+    var color = (e.userId && (HouseOfQuality.getCollaboratorById(e.userId) !== null)) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
 
     if (e.property === "name") {
         var name = e.newValue;
@@ -1613,7 +1613,7 @@ HouseOfQuality._userReqRelationshipsValueChanged = function(e, uuid) {
 
     if (!e.isLocal) {
         // awareness highlight
-        var color = (HouseOfQuality.getCollaboratorById(e.userId) !== null) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
+        var color = (e.userId && (HouseOfQuality.getCollaboratorById(e.userId) !== null)) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
         $("tr[data-uuid='" + uuid + "'] .hq_matrix_cell_relationship[data-uuid_funcreq='" + e.property + "']").effect("highlight", {color: color}, 2000);
     }
     // set max relationship value cell
@@ -1630,7 +1630,7 @@ HouseOfQuality._userReqRatingsValueChanged = function(e, uuid) {
 
     if (!e.isLocal) {
         // awareness highlight
-        var color = (HouseOfQuality.getCollaboratorById(e.userId) !== null) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
+        var color = (e.userId && (HouseOfQuality.getCollaboratorById(e.userId) !== null)) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
         $("tr[data-uuid='" + uuid + "'] .hq_matrix_cell_rating[data-uuid_product='" + e.property + "']").effect("highlight", {color: color}, 2000);
     }
 
@@ -1665,7 +1665,7 @@ HouseOfQuality._funcReqValuesAdded = function(e) {
 HouseOfQuality._funcReqValuesRemoved = function(e) {
     jQuery.each(e.values, function(index, funcReq) {
         // awareness highlight
-        var color = (HouseOfQuality.getCollaboratorById(e.userId) !== null) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
+        var color = (e.userId && (HouseOfQuality.getCollaboratorById(e.userId) !== null)) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
 
         if (!e.isLocal) {
             $("td[data-uuid='" + funcReq.uuid + "']").effect('highlight', {color: color}, 2000, function() {
@@ -1731,7 +1731,7 @@ HouseOfQuality._funcReqValuesRemoved = function(e) {
 
 HouseOfQuality._funcReqValueChanged = function(e) {
     // awareness highlight
-    var color = (HouseOfQuality.getCollaboratorById(e.userId) !== null) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
+    var color = (e.userId && (HouseOfQuality.getCollaboratorById(e.userId) !== null)) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
 
     if (e.property === "name") {
         var name = e.newValue;
@@ -1771,7 +1771,7 @@ HouseOfQuality._funcReqDependanciesValueChanged = function(e, uuid) {
 
     if (!e.isLocal) {
         // awareness highlight
-        var color = (HouseOfQuality.getCollaboratorById(e.userId) !== null) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
+        var color = (e.userId && (HouseOfQuality.getCollaboratorById(e.userId) !== null)) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
         $("div[data-uuid-a='" + uuid + "'][data-uuid-b='" + e.property + "']").effect("highlight", {color: color}, 2000);
     }
 };
@@ -1803,7 +1803,7 @@ HouseOfQuality._productValuesRemoved = function(e) {
     
     jQuery.each(removedProducts, function(index, productUuid) {
         // awareness highlight
-        var color = (HouseOfQuality.getCollaboratorById(e.userId) !== null) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
+        var color = (e.userId && (HouseOfQuality.getCollaboratorById(e.userId)) !== null) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
 
         if (!e.isLocal) {
             $("div[data-uuid='" + productUuid + "']").parent().effect('highlight', {color: color}, 2000, function() {
@@ -1861,7 +1861,7 @@ HouseOfQuality._productValueChanged = function(e) {
 
         if (!e.isLocal) {
             // awareness highlight
-            var color = (HouseOfQuality.getCollaboratorById(e.userId) !== null) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
+            var color = (e.userId && (HouseOfQuality.getCollaboratorById(e.userId) !== null)) ? HouseOfQuality.getCollaboratorById(e.userId).color : "#ffff99";
             $(".hq_matrix_cell_product div[data-uuid='" + e.target.uuid + "']").parent().effect("highlight", {color: color}, 2000);
         }
 
