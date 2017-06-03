@@ -467,6 +467,7 @@ input {
 
 select {
     position: relative;
+    z-index: 101;
 }
 
 /** HEADER **/
