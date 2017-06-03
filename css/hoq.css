@@ -465,6 +465,10 @@ input {
     background-color: #F2A96E;
 }
 
+select {
+    position: relative;
+}
+
 /** HEADER **/
 
 .hq_matrix_header_rownr {

@@ -493,6 +493,7 @@ HouseOfQuality._onCellChangedProductName = function(value, settings, source) {
  * @returns {String} a JSON string with an object containing the possible values of the relationship cell.
  */
 HouseOfQuality._cellValuesRelationship = function(args) {
+    console.log('_cellValuesRelationship');
     var selection = "-1";
     if (args[0] === "Θ") {
         selection = "9";
@@ -502,7 +503,7 @@ HouseOfQuality._cellValuesRelationship = function(args) {
         selection = "1";
     }
 
-    return '{"-1":"", "9":"Θ", "3":"Ο", "1":"▲", "selected": "' + selection + '"}';
+    return '{"-1":"neutral", "9":"Θ strong relationship", "3":"Ο moderate relationship", "1":"▲ weak relationship", "selected": "' + selection + '"}';
 };
 
 /**
@@ -646,7 +647,7 @@ HouseOfQuality._cellValuesImprovement = function(args) {
         selection = "3";
     }
 
-    return '{"-1":"", "1":"▼", "2":"▲", "3":"x", "selected": "' + selection + '"}';
+    return '{"-1":"neutral", "1":"▼ objective is to minimize", "2":"▲ objective is to maximize", "3":"x objective is to hit target", "selected": "' + selection + '"}';
 };
 
 /**
@@ -710,7 +711,7 @@ HouseOfQuality._cellValuesDependancy = function(args) {
         selection = "4";
     }
 
-    return '{"-1":"", "1":"┼┼", "2":"┼", "3":"▬", "4":"▼", "selected": "' + selection + '"}';
+    return '{"-1":"neutral", "1":"┼┼ strong positive correlation", "2":"┼ positive correlation", "3":"▬ negative correlation", "4":"▼ strong negative correlation", "selected": "' + selection + '"}';
 };
 
 /**
