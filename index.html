@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>House of Quality App</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="script/jquery.jeditable.js"></script>
+        
+        <!-- Drive Realtime library -->
+        <script type="text/javascript" src="https://apis.google.com/js/api.js"></script>
+
+        <!-- Drive utility library -->
+        <script type="text/javascript" src="script/realtime-client-utils.js"></script>
+        
+        <!-- app logic -->
+        <script type="text/javascript" src="script/hoq.js"></script>
+        
+        <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/themes/redmond/jquery-ui.css">
+        <link rel="stylesheet" href="css/hoq.css">
+    </head>
+    <body>
+        
+        <div id="splashscreen">
+            <img src="images/hoqicon.png" style="float:left;margin-right: 15px;">
+            
+            <h1>House of Quality</h1>
+            <br />
+            
+            <button type="button" id="btn_authorize">
+                Authorize App
+            </button>
+            <br /><br />
+        </div>
+        
+        <header id="header">
+            
+            <h3>
+                House of Quality
+            </h3>
+            
+            <div>
+                <button type="button" id="btn_undo">
+                    Undo
+                </button>
+
+                <button type="button" id="btn_redo">
+                    Redo
+                </button>
+            </div>
+            
+            <button type="button" id="btn_adduserreq">
+                Add Customer Requirement
+            </button>
+
+            <button type="button" id="btn_addfuncreq">
+                Add Quality Characteristic
+            </button>
+            
+            <button type="button" id="btn_addproduct">
+                Add Product
+            </button>
+            
+            <button type="button" id="btn_users">
+                1
+            </button>
+        </header>
+        
+        <button id="authorizeButton" disabled style="display:none;">Authorize</button>
+        
+        <div id="lyr_user_list" class="ui-state-default"></div>
+        
+        <div>
+            <canvas id="hq_products_diagram" class="hq_plot" width="180" height="126"></canvas>
+            
+            <table class="hq_house">
+                <tr class="hq_matrix_row">
+                    <td style="width:30px;"></td>
+                    <td style="width:30px;"></td>
+                    <td style="width:40px;"></td>
+                    <td style="width:30px;"></td>
+                    <td style="width:300px;"></td>
+                    
+                    <td colspan="6" class="hq_roof">
+                        <canvas id="hq_roof_canvas" width="240" height="120"></canvas>
+                        
+                        <div class="hq_roof_values">
+                        </div>
+                    </td>
+                    
+                    <td class="hq_remainder_right" colspan="7" style="width:210px;"></td>
+                </tr>
+                
+                <tr class="hq_matrix_row">
+                    <td style="width:30px;"></td>
+                    <td style="width:30px;"></td>
+                    <td style="width:40px;"></td>
+                    <td style="width:30px;"></td>
+                    <td class="hq_matrix_cell_colnr_label hq_matrix_header_colnr_label">Column #</td>
+
+                    <td class="hq_remainder_right" colspan="6"></td>
+                </tr>
+                
+                <tr class="hq_matrix_row">
+                    <td colspan="4" style="width: 130px;"></td>                  
+                    <td class="hq_matrix_cell_improvement_label">Direction of Improvement:</td>
+         
+                    <td colspan="6" class="hq_remainder_right hq_matrix_cell_analysis_label">Competitive Analysis</td>
+                </tr>
+                
+                <tr class="hq_matrix_header">
+                    <td class="hq_matrix_header_rownr"><div>Row #</div></td>
+                    <td class="hq_matrix_header_maxrelvalue"><div>Max Relationship Value in Row</div></td>
+                    <td class="hq_matrix_header_relweight"><div>Relative Weight</div></td>
+                    <td class="hq_matrix_header_weight"><div>Weight / Importance</div></td>
+                    <td class="hq_matrix_header_custreq"><div>Demanded Quality</div></td>
+                 
+                    <td class="hq_matrix_cell_ratinglabel">0</td>
+                    <td class="hq_matrix_cell_ratinglabel">1</td>
+                    <td class="hq_matrix_cell_ratinglabel">2</td>
+                    <td class="hq_matrix_cell_ratinglabel">3</td>
+                    <td class="hq_matrix_cell_ratinglabel">4</td>
+                    <td class="hq_matrix_cell_ratinglabel">5</td>
+                </tr>          
+
+                <tr class="hq_matrix_row">
+                    <td colspan="4"></td>
+                    <td class="hq_matrix_cell_colnr_label hq_matrix_cell_target_label">Target or Limit Value</td>
+
+                    <td class="hq_remainder_right" colspan="6"></td>
+                </tr>
+                
+                <tr class="hq_matrix_row">
+                    <td colspan="4"></td>
+                    <td class="hq_matrix_cell_colnr_label hq_matrix_cell_difficulty_label">Difficulty</td>
+     
+                    <td class="hq_remainder_right" colspan="6"></td>
+                </tr>
+                
+                <tr class="hq_matrix_row">
+                    <td colspan="4"></td>
+                    <td class="hq_matrix_cell_colnr_label hq_matrix_cell_maxrelvalue_label">Max Relationship Value in Column</td>
+              
+                    <td class="hq_remainder_right" colspan="6"></td>
+                </tr>
+                
+                <tr class="hq_matrix_row">
+                    <td colspan="4"></td>
+                    <td class="hq_matrix_cell_colnr_label hq_matrix_cell_importance_label">Weight / Importance</td>
+               
+                    <td class="hq_remainder_right" colspan="6"></td>
+                </tr>
+                
+                <tr class="hq_matrix_row">
+                    <td colspan="4"></td>
+                    <td class="hq_matrix_cell_colnr_label hq_matrix_cell_relweight_label">Relative Weight</td>
+
+                    <td class="hq_remainder_right" colspan="6"></td>
+                </tr>
+            </table>
+            
+        </div>
+    </body>
+</html>
