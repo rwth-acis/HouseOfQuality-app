@@ -243,8 +243,11 @@ HouseOfQuality._addEditableListeners = function() {
     $(".hq_roof .hq_roof_values div").mouseleave(HouseOfQuality._onCellDependancyMouseleave);
 
 
-    $(".hq_customerreq").mouseenter(HouseOfQuality._onRowCustomerRequirementMouseenter);
-    $(".hq_customerreq").mouseleave(HouseOfQuality._onRowCustomerRequirementMouseleave);
+    $(".hq_matrix_cell_rownr").mouseenter(HouseOfQuality._onRowCustomerRequirementMouseenter);
+    $(".hq_matrix_cell_rownr").mouseleave(HouseOfQuality._onRowCustomerRequirementMouseleave);
+
+    $(".hq_matrix_cell_colnr").mouseenter(HouseOfQuality._onColumnFunctionalRequirementMouseenter);
+    $(".hq_matrix_cell_colnr").mouseleave(HouseOfQuality._onColumnFunctionalRequirementMouseleave);
 };
 
 /**
@@ -793,7 +796,7 @@ HouseOfQuality._onCellDependancyMouseleave = function(event) {
 
 HouseOfQuality._onRowCustomerRequirementMouseenter = function(event) {
     // remove the row number
-    event.delegateTarget.firstChild.innerText = "";
+    event.delegateTarget.innerText = "";
 
     // add delete link
     $("<a>", {
@@ -801,12 +804,30 @@ HouseOfQuality._onRowCustomerRequirementMouseenter = function(event) {
         title: "Remove this customer requirement",
         href: "#",
         click: HouseOfQuality._onRemoveUserRequirement
-        }).appendTo(event.delegateTarget.firstChild);
+        }).appendTo(event.delegateTarget);
 };
 
 HouseOfQuality._onRowCustomerRequirementMouseleave = function(event) {
-    var row = $(event.delegateTarget.parentNode).children().index(event.delegateTarget) - 3;
-    event.delegateTarget.firstChild.innerText = row;
+    var row = $(".hq_matrix_cell_rownr").index(event.delegateTarget) + 1;
+    event.delegateTarget.innerText = row;
+};
+
+HouseOfQuality._onColumnFunctionalRequirementMouseenter = function(event) {
+    // remove the row number
+    event.delegateTarget.innerText = "";
+
+    // add delete link
+    $("<a>", {
+        text: "X",
+        title: "Remove this functional requirement",
+        href: "#",
+        click: HouseOfQuality._onRemoveFunctionalRequirement
+    }).appendTo(event.delegateTarget);
+};
+
+HouseOfQuality._onColumnFunctionalRequirementMouseleave = function(event) {
+    var column = $(".hq_matrix_cell_colnr").index(event.delegateTarget) + 1;
+    event.delegateTarget.innerText = column;
 };
 
 /**
@@ -895,11 +916,11 @@ HouseOfQuality._onRemoveUserRequirement = function(event) {
             modal: true,
             buttons: {
                 "Delete item": function() {
-                    $(this).dialog( "close" );
+                    $(this).dialog("close");
                     HouseOfQuality.removeUserRequirement(uuid);
                 },
                 Cancel: function() {
-                    $(this).dialog( "close" );
+                    $(this).dialog("close");
                 }
             }
         });
@@ -1045,8 +1066,36 @@ HouseOfQuality.setFunctionalRequirementColumn = function(funcReq) {
     HouseOfQuality._addEditableListeners();
 };
 
+HouseOfQuality._onRemoveFunctionalRequirement = function(event) {
+    var uuid = event.delegateTarget.parentNode.dataset.uuid;
+    $(function() {
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            height: "auto",
+            width: 400,
+            modal: true,
+            buttons: {
+                "Delete item": function() {
+                    $(this).dialog("close");
+                    HouseOfQuality.removeFunctionalRequirement(uuid);
+                },
+                Cancel: function() {
+                    $(this).dialog("close");
+                }
+            }
+        });
+    });
+};
+
 HouseOfQuality.removeFunctionalRequirement = function(funcReq) {
-    // TODO: remove from data
+    var userReqArray = HouseOfQuality._funcRequirements.asArray();
+
+    $.each(userReqArray, function(index, value) {
+        if (value.uuid === funcReq) {
+            HouseOfQuality._funcRequirements.remove(index);
+            return false;
+        }
+    });
 };
 
 HouseOfQuality.addProduct = function() {
@@ -1751,6 +1800,12 @@ HouseOfQuality._funcReqValuesRemoved = function(e) {
             $("div[data-uuid_funcreq='" + funcReq.uuid + "']").parent().effect('highlight', {color: color}, 2000, function() {
                 $(this).fadeOut('fast', function() {
                     $(this).remove();
+
+                    // update column numbers
+                    var row = 1;
+                    $('.hq_matrix_cell_colnr').each(function(i, obj) {
+                        obj.innerText = row++;
+                    });
                 });
             });
         } else {
@@ -1763,6 +1818,12 @@ HouseOfQuality._funcReqValuesRemoved = function(e) {
             });
             $("div[data-uuid_funcreq='" + funcReq.uuid + "']").parent().fadeOut('fast', function() {
                 $(this).remove();
+
+                // update column numbers
+                var row = 1;
+                $('.hq_matrix_cell_colnr').each(function(i, obj) {
+                    obj.innerText = row++;
+                });
             });
         }
         // remove this funcReq from userReq.relationships
