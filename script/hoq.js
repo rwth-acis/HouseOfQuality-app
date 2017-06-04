@@ -241,6 +241,10 @@ HouseOfQuality._addEditableListeners = function() {
 
     $(".hq_roof .hq_roof_values div").mouseenter(HouseOfQuality._onCellDependancyMouseenter);
     $(".hq_roof .hq_roof_values div").mouseleave(HouseOfQuality._onCellDependancyMouseleave);
+
+
+    $(".hq_customerreq").mouseenter(HouseOfQuality._onRowCustomerRequirementMouseenter);
+    $(".hq_customerreq").mouseleave(HouseOfQuality._onRowCustomerRequirementMouseleave);
 };
 
 /**
@@ -493,7 +497,6 @@ HouseOfQuality._onCellChangedProductName = function(value, settings, source) {
  * @returns {String} a JSON string with an object containing the possible values of the relationship cell.
  */
 HouseOfQuality._cellValuesRelationship = function(args) {
-    console.log('_cellValuesRelationship');
     var selection = "-1";
     if (args[0] === "Θ") {
         selection = "9";
@@ -788,9 +791,26 @@ HouseOfQuality._onCellDependancyMouseleave = function(event) {
     $("div[data-uuid_funcreq='" + uuidB + "']").parent().removeClass("highlight");
 };
 
+HouseOfQuality._onRowCustomerRequirementMouseenter = function(event) {
+    // remove the row number
+    event.delegateTarget.firstChild.innerText = "";
+
+    // add delete link
+    $("<a>", {
+        text: "X",
+        title: "Remove this customer requirement",
+        href: "#",
+        click: HouseOfQuality._onRemoveUserRequirement
+        }).appendTo(event.delegateTarget.firstChild);
+};
+
+HouseOfQuality._onRowCustomerRequirementMouseleave = function(event) {
+    var row = $(event.delegateTarget.parentNode).children().index(event.delegateTarget) - 3;
+    event.delegateTarget.firstChild.innerText = row;
+};
 
 /**
- * Adds a new user requirement to the model and calls another method to add it to the UI.
+ * Adds a new user requirement to the model which in turn calls another method to add it to the UI.
  * 
  * @returns {undefined}
  */
@@ -804,7 +824,7 @@ HouseOfQuality.addUserRequirement = function() {
     //// create row
     //HouseOfQuality.setUserRequirementRow(userReq);
 
-    // update diagram
+    // update products diagram
     HouseOfQuality.updateProductsDiagram();
 };
 
@@ -846,7 +866,7 @@ HouseOfQuality.setUserRequirementRow = function(userReq) {
         reqelem += '<td data-uuid_product="' + product.uuid + '" class="hq_matrix_cell_rating">' + rating + '</td>';
     }
 
-    reqelem += '<td colspan="6"></td></tr>';
+    reqelem += '<td class="hq_matrix_row_products" colspan="6"></td></tr>';
 
     if ($(".hq_customerreq").exists()) {
         // insert after last customer requirement
@@ -859,8 +879,45 @@ HouseOfQuality.setUserRequirementRow = function(userReq) {
     HouseOfQuality._addEditableListeners();
 };
 
+/**
+ * Called when clicking the 'X' in a customer requirement row.
+ *
+ * @param event
+ * @private
+ */
+HouseOfQuality._onRemoveUserRequirement = function(event) {
+    var uuid = event.delegateTarget.parentNode.parentNode.dataset.uuid;
+    $(function() {
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            height: "auto",
+            width: 400,
+            modal: true,
+            buttons: {
+                "Delete item": function() {
+                    $(this).dialog( "close" );
+                    HouseOfQuality.removeUserRequirement(uuid);
+                },
+                Cancel: function() {
+                    $(this).dialog( "close" );
+                }
+            }
+        });
+    });
+};
+
 HouseOfQuality.removeUserRequirement = function(userReq) {
-    // TODO: remove from data
+    var userReqArray = HouseOfQuality._userRequirements.asArray();
+
+    $.each(userReqArray, function(index, value) {
+        if (value.uuid === userReq) {
+            HouseOfQuality._userRequirements.remove(index);
+            return false;
+        }
+    });
+
+    // update products diagram
+    HouseOfQuality.updateProductsDiagram();
 };
 
 HouseOfQuality.addFunctionalRequirement = function() {
@@ -1385,6 +1442,7 @@ HouseOfQuality.redo = function() {
  * be used to initialize any user interface components and event handlers
  * depending on the Realtime model. In this case, create a text control binder
  * and bind it to our string model that we created in initializeModel.
+ *
  * @param doc {gapi.drive.realtime.Document} the Realtime document.
  */
 HouseOfQuality.onFileLoaded = function(doc) {
@@ -1556,11 +1614,23 @@ HouseOfQuality._userReqValuesRemoved = function(e) {
             $("tr[data-uuid='" + userReq.uuid + "']").effect('highlight', {color: color}, 2000, function() {
                 $(this).fadeOut('fast', function() {
                     $(this).remove();
+
+                    // update row numbers
+                    var row = 1;
+                    $('.hq_matrix_cell_rownr').each(function(i, obj) {
+                        obj.innerText = row++;
+                    });
                 });
             });
         } else {
             $("tr[data-uuid='" + userReq.uuid + "']").fadeOut('fast', function() {
                 $(this).remove();
+
+                // update row numbers
+                var row = 1;
+                $('.hq_matrix_cell_rownr').each(function(i, obj) {
+                    obj.innerText = row++;
+                });
             });
         }
     });
