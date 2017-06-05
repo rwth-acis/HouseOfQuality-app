@@ -1,4 +1,4 @@
-# HouseOfQuality-app
+# House of Quality App
 
 Collaborative House of Quality App Available in the Chrome Web Store.
 
